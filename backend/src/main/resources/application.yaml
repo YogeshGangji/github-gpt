@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: backend
+
+#Defaults
+  datasource:
+    url: jdbc:postgresql://localhost:5433/devpilot
+    username: devpilot
+    password: devpilot
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+  
+  ai:
+    openai:
+      base-url: https://api.mistral.ai/v1/
+      api-key: mstrl_NlpDoK5sEp8yrNcs1WcfnIUqBY9GoKMK_4E8Zlc
+      chat:
+        model: mistral-small-latest
+      embedding:
+        model: mistral-embed
+
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 1024
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GIT_HUB_CLIENT_ID:Ov23liTftpvcnq0YDhYa}
+            client-secret: ${GIT_HUB_CLIENT_SECRET:289f4df376ccc9d63b6268fab08d6845052903a0}
+            scope:
+              - read:user
+              - repo
+        provider:
+          github:
+            user-name-attribute: id
+
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:3000}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+  token-encryptor-password: ${TOKEN_ENCRYPTOR_PASSWORD:devpilot-local-encrypt-key-change-me}
+  token-encryptor-salt: ${TOKEN_ENCRYPTOR_SALT:deadbeefcafebabe}
+  indexing:
+    max-file-bytes: 102400
+    chunk-size: 800
+    chunk-overlap: 100
+  github:
+    api-delay-ms: 50
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: DEVPILOT_SESSION
+        http-only: true
+        same-site: lax
+      timeout: 7d
